@@ -16,7 +16,7 @@ def set_submitted(files):
         
         config["submitted"] = True
         with open(filename, "w") as f:
-            json.dump(config, f)
+            json.dump(config, f, indent=4)
 
 
 if __name__ == "__main__":
