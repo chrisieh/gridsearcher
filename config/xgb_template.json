@@ -35,6 +35,6 @@
         "eval_metric": [["auc", "rmse"]],
         "nthread": 4,
         "num_rounds": 10000,
-        "early_stopping": 20
+        "early_stopping_rounds": 20
     }
 }
