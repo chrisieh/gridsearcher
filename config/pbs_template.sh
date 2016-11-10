@@ -10,6 +10,7 @@ source /etc/profile
 
 echo "Running job $PBS_ARRAYID"
 
+cd $PBS_O_WORKDIR
 setupATLAS
 lsetup root
 python scripts/runner.py $PBS_ARRAYID
