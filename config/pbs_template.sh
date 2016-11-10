@@ -13,6 +13,7 @@ echo "Running job $PBS_ARRAYID"
 cd $PBS_O_WORKDIR
 setupATLAS
 lsetup root
+source $HOME/env/tid/bin/activate
 python scripts/runner.py $PBS_ARRAYID
 
 echo "Done"
