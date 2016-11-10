@@ -62,5 +62,5 @@ if __name__ == "__main__":
     # End of classifier specific code -----------------------------------------
     
     config["trained"] = True
-    with open(identifier + ".json", "w") as f:
+    with open("models/" + identifier + ".json", "w") as f:
         json.dump(config, f, indent=4)
