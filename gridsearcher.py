@@ -1,7 +1,13 @@
+import argparse
 import glob
 import itertools
 import json
 import os
+
+def get_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("config", help="Grid-search configuration file")
+    return parser.parse_args()
 
 
 # Build list of option dictionaries from dictionary
@@ -13,33 +19,36 @@ def grid_to_opts(grid):
     return options
 
 
-# Check for existing configs
-identifiers = []
-for filename in glob.glob("models/*.json"):
-    with open(filename, "r") as f:
+if __name__ == "__main__":
+    args = get_args()
+
+    # Check for existing configs
+    identifiers = []
+    for filename in glob.glob("models/*.json"):
+        with open(filename, "r") as f:
+            config = json.load(f)
+        identifiers.append(int(config["identifier"]))
+
+    id_start = 0 if len(identifiers) == 0 else max(identifiers) + 1
+
+    # TODO: this should be a cmd line argument
+    with open("config/xgb_template.json") as f:
         config = json.load(f)
-    identifiers.append(int(config["identifier"]))
 
-id_start = 0 if len(identifiers) == 0 else max(identifiers) + 1
+    options = grid_to_opts(config["grid"])
 
-# TODO: this should be a cmd line argument
-with open("config/xgb_template.json") as f:
-    config = json.load(f)
-
-options = grid_to_opts(config["grid"])
-
-# Build model description files
-for i, opt in enumerate(options, id_start):
-    label = "{:04}".format(i)
-    
-    model_desc = {
-        "identifier": "{:04}".format(i),
-        "classifier": config["classifier"],
-        "settings": config["settings"],
-        "classifier_settings": opt,
-        "submitted": False,
-        "trained": False
-    }
-    
-    with open("models/{}.json".format(label), "w") as f:
-        json.dump(model_desc, f, indent=4)
+    # Build model description files
+    for i, opt in enumerate(options, id_start):
+        label = "{:04}".format(i)
+        
+        model_desc = {
+            "identifier": "{:04}".format(i),
+            "classifier": config["classifier"],
+            "settings": config["settings"],
+            "classifier_settings": opt,
+            "submitted": False,
+            "trained": False
+        }
+        
+        with open("models/{}.json".format(label), "w") as f:
+            json.dump(model_desc, f, indent=4)
