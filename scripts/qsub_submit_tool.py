@@ -7,7 +7,9 @@ import sys
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-n", type=int, help="Number of jobs")
+    parser.add_argument("script", help="Path to PBS script")
     return parser.parse_args()
+
 
 def set_submitted(files):
     for filename in files:
@@ -43,7 +45,7 @@ if __name__ == "__main__":
     qsub_t_str = ",".join(map(str, [int(identifier) for _, identifier in submit]))
     
     print("Submitting: {}".format(qsub_t_str))
-    retcode = subprocess.call(["qsub", "-t", qsub_t_str, "scripts/pbs.sh"])
+    retcode = subprocess.call(["qsub", "-t", qsub_t_str, args.script])
 
     # Set submitted to true
     if retcode == 0:

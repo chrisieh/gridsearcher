@@ -11,45 +11,56 @@ def get_identifier():
 if __name__ == "__main__":
     identifier = get_identifier()
 
-    with open(identifier + ".json", "r") as f:
+    with open("models/" + identifier + ".json", "r") as f:
         config = json.load(f)
+    
+    # TODO: select correct behavior based on "classifier" in config file
     
     # Classifier specific code -------------------------------------------------
     import pandas as pd
     import xgboost as xgb
+
+    # Non classifier specific settings
+    settings = config["settings"]
+
+    train_path = settings["train"]
+    test_path = settings["test"]
+
+    variables = settings["variables"]
+    classlabel = settings["classlabel"]
+    weight = settings["weight"]
     
     # Load data
-    invars = config["variables"] + [config["weight"], config["classlabel"]]
-    data_train = pd.read_hdf(config["train"], columns=invars)
-    dtrain = xgb.DMatrix(data_train[config["variables"]],
-                         label=data_train[config["classlabel"]],
-                         weight=data_train[config["weight"]])    
-    # Free memory
+    invars = variables + [classlabel, weight]
+
+    data_train = pd.read_hdf(train_path, columns=invars)
+    dtrain = xgb.DMatrix(data_train[variables],
+                         label=data_train[classlabel],
+                         weight=data_train[weight])
     del data_train
     gc.collect()
 
-    data_test = pd.read_hdf(config["test"], columns=invars)
-    dtest = xgb.DMatrix(data_test[config["variables"]],
-                        label=data_test[config["classlabel"]],
-                        weight=data_test[config["weight"]])
-    # Free memory
+    data_test = pd.read_hdf(test_path, columns=invars)
+    dtest = xgb.DMatrix(data_test[variables],
+                        label=data_test[classlabel],
+                        weight=data_test[weight])
     del data_test
     gc.collect()
 
-    evallist = [(dtrain, "train"), (dtest, "test")]
+    # Define samples to monitor
+    watchlist = [(dtrain, "train"), (dtest, "test")]
 
-    # TODO: move this to json?
-    params = config["config"].copy()
-    params["eval_metric"] = ["auc", "rmse"]
-    params["nthread"] = 8
-    num_rounds = 20
-    early_stopping = 20
+    # Start training
+    params = config["classifier_settings"].copy()
+    early_stopping_rounds = params.pop("early_stopping_rounds")
+    num_rounds = params.pop("num_rounds")
 
-    bst = xgb.train(params, dtrain, num_rounds, evallist,
-                    early_stopping_rounds=early_stopping)
-    bst.save_model("{}.model".format(config["identifier"]))
+    bst = xgb.train(params, dtrain, num_rounds, watchlist,
+                    early_stopping_rounds=early_stopping_rounds)
+    bst.save_model("models/{}.model".format(config["identifier"]))
+
     # End of classifier specific code -----------------------------------------
     
-    config["processed"] = True
+    config["trained"] = True
     with open(identifier + ".json", "w") as f:
         json.dump(config, f, indent=4)
