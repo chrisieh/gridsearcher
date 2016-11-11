@@ -1,6 +1,7 @@
 import argparse
-import json
 import gc
+import json
+import time
 
 def get_identifier():
     parser = argparse.ArgumentParser()
@@ -13,7 +14,9 @@ if __name__ == "__main__":
 
     with open("models/" + identifier + ".json", "r") as f:
         config = json.load(f)
-    
+
+    tstart = time.time()
+
     # TODO: select correct behavior based on "classifier" in config file
     
     # Classifier specific code -------------------------------------------------
@@ -61,6 +64,9 @@ if __name__ == "__main__":
 
     # End of classifier specific code -----------------------------------------
     
+    tend = time.time()
+
     config["trained"] = True
+    config["training_time"] = tend - tstart
     with open("models/" + identifier + ".json", "w") as f:
         json.dump(config, f, indent=4)
