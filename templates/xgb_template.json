@@ -1,0 +1,40 @@
+{  
+    "classifier": "xgboost",
+    "settings": {
+        "train": "samples/train.h5",
+        "test": "samples/test.h5",
+        "variables": [
+            "TauJets.centFrac",
+            "TauJets.etOverPtLeadTrk",
+            "TauJets.innerTrkAvgDist",
+            "TauJets.absipSigLeadTrk",
+            "TauJets.SumPtTrkFrac",
+            "TauJets.ChPiEMEOverCaloEME",
+            "TauJets.EMPOverTrkSysP",
+            "TauJets.ptRatioEflowApprox",
+            "TauJets.mEflowApprox"
+        ],
+        "classlabel": "is_sig",
+        "weight": "weight"
+    },
+    "grid": {
+        "eta": [0.01, 0.02, 0.04, 0.07, 0.1, 0.15, 0.2, 0.3],
+        "gamma": 0,
+        "max_depth": [4, 6, 8, 10],
+        "min_child_weight": [2500.0, 5000.0],
+        "max_delta_step": 0,
+        "subsample": 1,
+        "colsample_bytree": 1,
+        "colsample_bylevel": 1,
+        "lambda": 1,
+        "alpha": 0,
+        "tree_method": "auto",
+        "sketch_eps": 0.03,
+        "scale_pos_weight": 1,
+        "objective": "binary:logistic",
+        "eval_metric": [["auc", "rmse"]],
+        "nthread": 4,
+        "num_rounds": 10000,
+        "early_stopping_rounds": 20
+    }
+}
