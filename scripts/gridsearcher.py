@@ -51,7 +51,8 @@ if __name__ == "__main__":
             "settings": config["settings"],
             "classifier_settings": opt,
             "submitted": False,
-            "trained": False
+            "trained": False,
+            "evaluated": False
         }
         
         with open(os.path.join(config_dir, "{}.json".format(label)), "w") as f:
