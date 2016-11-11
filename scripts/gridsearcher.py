@@ -4,6 +4,7 @@ import itertools
 import json
 import os
 
+
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("config", help="Grid-search configuration file")
@@ -21,20 +22,23 @@ def grid_to_opts(grid):
 
 if __name__ == "__main__":
     args = get_args()
+    base_dir = os.path.dirname(args.config)
+    config_dir = os.path.join(base_dir, "configs")
 
     # Check for existing configs
     identifiers = []
-    for filename in glob.glob("models/*.json"):
+    for filename in glob.glob(os.path.join(config_dir, "*.json")):
         with open(filename, "r") as f:
             config = json.load(f)
         identifiers.append(int(config["identifier"]))
 
     id_start = 0 if len(identifiers) == 0 else max(identifiers) + 1
 
-    # TODO: this should be a cmd line argument
-    with open("config/xgb_template.json") as f:
+    # Load config
+    with open(args.config) as f:
         config = json.load(f)
 
+    # Get all combinations of options
     options = grid_to_opts(config["grid"])
 
     # Build model description files
@@ -50,5 +54,5 @@ if __name__ == "__main__":
             "trained": False
         }
         
-        with open("models/{}.json".format(label), "w") as f:
+        with open(os.path.join(config_dir, "{}.json".format(label)), "w") as f:
             json.dump(model_desc, f, indent=4)

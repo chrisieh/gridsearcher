@@ -12,9 +12,11 @@ def get_identifier():
 if __name__ == "__main__":
     identifier = get_identifier()
 
-    with open("models/" + identifier + ".json", "r") as f:
+    # Load configuration
+    with open("configs/{}.json".format(identifier), "r") as f:
         config = json.load(f)
 
+    # Time execution
     tstart = time.time()
 
     # TODO: select correct behavior based on "classifier" in config file
@@ -68,5 +70,5 @@ if __name__ == "__main__":
 
     config["trained"] = True
     config["training_time"] = tend - tstart
-    with open("models/" + identifier + ".json", "w") as f:
+    with open("configs/{}.json".format(identifier), "w") as f:
         json.dump(config, f, indent=4)
