@@ -23,10 +23,12 @@ def set_submitted(files):
 
 if __name__ == "__main__":
     args = get_args()
+    base_dir = os.path.dirname(args.script)
+    config_dir = os.path.join(base_dir, "configs")
 
     # Find jobs which have not been submitted
     not_submitted = []
-    for filename in glob.glob("models/*.json"):
+    for filename in glob.glob(os.path.join(config_dir, "*.json")):
         with open(filename) as f:
             config = json.load(f)
         if not config["submitted"]:
@@ -45,7 +47,7 @@ if __name__ == "__main__":
     qsub_t_str = ",".join(map(str, [int(identifier) for _, identifier in submit]))
     
     print("Submitting: {}".format(qsub_t_str))
-    retcode = subprocess.call(["qsub", "-t", qsub_t_str, args.script])
+    retcode = subprocess.call(["qsub", "-d", base_dir,"-t", qsub_t_str, args.script])
 
     # Set submitted to true
     if retcode == 0:
