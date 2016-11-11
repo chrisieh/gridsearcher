@@ -48,7 +48,9 @@ if __name__ == "__main__":
     qsub_t_str = ",".join(map(str, [int(identifier) for _, identifier in submit]))
     
     print("Submitting: {}".format(qsub_t_str))
-    retcode = subprocess.call(["qsub", "-d", base_dir,"-t", qsub_t_str, args.script])
+    retcode = subprocess.call(["qsub", "-d", base_dir,
+                               "-t", qsub_t_str,
+                               os.path.basename(args.script]))
 
     # Set submitted to true
     if retcode == 0:
