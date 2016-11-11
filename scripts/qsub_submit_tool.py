@@ -50,7 +50,7 @@ if __name__ == "__main__":
     print("Submitting: {}".format(qsub_t_str))
     retcode = subprocess.call(["qsub", "-d", base_dir,
                                "-t", qsub_t_str,
-                               os.path.basename(args.script]))
+                               os.path.basename(args.script)])
 
     # Set submitted to true
     if retcode == 0:
