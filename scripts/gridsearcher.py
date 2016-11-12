@@ -1,59 +1,47 @@
 import argparse
-import glob
-import itertools
-import json
-import os
+
+from init import init
+from build import build
+from submit import submit
 
 
-def get_args():
+def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("config", help="Grid-search configuration file")
+    subparsers = parser.add_subparsers(help="Subcommands")
+
+    # Init subparser
+    subparser_init = subparsers.add_parser("init",
+        help="Initialize project directory")
+    # Init args
+    subparser_init.add_argument("folder",
+        help="Name of grid-search folder")
+    subparser_init.add_argument("-xgb", action="store_true",
+        help="Copy XGBoost templates")
+    subparser_init.add_argument("-pbs", action="store_true",
+        help="Copy PBS templates")
+    subparser_init.set_defaults(func=init)
+    
+    # Build subparser
+    subparser_build = subparsers.add_parser("build",
+        help="Build models from configuration file")
+    # Build args
+    subparser_build.add_argument("config",
+        help="Grid-search configuration file")
+    subparser_build.set_defaults(func=build)
+    
+    # Submit subparser
+    subparser_submit = subparsers.add_parser("submit",
+        help="Submit to cluster")
+    # Submit args
+    subparser_submit.add_argument("-n", type=int,
+        help="Number of jobs to submit")
+    subparser_submit.add_argument("script",
+        help="Path to PBS script")
+    subparser_submit.set_defaults(func=submit)
+
     return parser.parse_args()
 
 
-# Build list of option dictionaries from dictionary
-def grid_to_opts(grid):
-    options = {key: grid[key] if isinstance(grid[key], list) else [grid[key]] for key in grid}
-    keys, vals = options.keys(), options.values()
-    product = itertools.product(*vals)
-    options = [dict(zip(keys, x)) for x in product]
-    return options
-
-
 if __name__ == "__main__":
-    args = get_args()
-    base_dir = os.path.dirname(args.config)
-    config_dir = os.path.join(base_dir, "configs")
-
-    # Check for existing configs
-    identifiers = []
-    for filename in glob.glob(os.path.join(config_dir, "*.json")):
-        with open(filename, "r") as f:
-            config = json.load(f)
-        identifiers.append(int(config["identifier"]))
-
-    id_start = 0 if len(identifiers) == 0 else max(identifiers) + 1
-
-    # Load config
-    with open(args.config) as f:
-        config = json.load(f)
-
-    # Get all combinations of options
-    options = grid_to_opts(config["grid"])
-
-    # Build model description files
-    for i, opt in enumerate(options, id_start):
-        label = "{:04}".format(i)
-        
-        model_desc = {
-            "identifier": "{:04}".format(i),
-            "classifier": config["classifier"],
-            "settings": config["settings"],
-            "classifier_settings": opt,
-            "submitted": False,
-            "trained": False,
-            "evaluated": False
-        }
-        
-        with open(os.path.join(config_dir, "{}.json".format(label)), "w") as f:
-            json.dump(model_desc, f, indent=4)
+    args = parse_args()
+    args.func(args)

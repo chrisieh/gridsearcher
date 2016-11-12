@@ -1,21 +1,9 @@
-import argparse
 import os
 import shutil
 import sys
 
-def get_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("folder", help="Project folder")
-    parser.add_argument("-xgb", action="store_true",
-                        help="Copy XGBoost templates")
-    parser.add_argument("-pbs", action="store_true",
-                        help="Copy PBS templates")
-    return parser.parse_args()
 
-
-if __name__ == "__main__":
-    args = get_args()
-    
+def init(args):
     if os.path.exists(args.folder):
         print("Path already exists")
         sys.exit(1)

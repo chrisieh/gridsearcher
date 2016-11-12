@@ -1,9 +1,9 @@
-import argparse
 import glob
 import json
 import os
 import subprocess
 import sys
+
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -22,8 +22,7 @@ def set_submitted(files):
             json.dump(config, f, indent=4)
 
 
-if __name__ == "__main__":
-    args = get_args()
+def submit(args):
     base_dir = os.path.dirname(args.script)
     config_dir = os.path.join(base_dir, "configs")
 
