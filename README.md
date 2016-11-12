@@ -2,9 +2,21 @@
 
 ## Quickstart
 
-1. Clone this repo
-2. Optional: Place training/test sample in `samples`-folder
-3. Setup grid, samples, classifier settings in `templates/xgb_template.json`
-4. Setup PBS script `templates/pbs_template.sh` for cluster submission
-5. Create model descriptions `python scripts/gridsearcher.py templates/xgb_template.json`
-6. Submit to cluster `python scripts/qsub_submit_tool.py -n <number of jobs> templates/pbs_template.json`
+Create a project folder for the grid-search:
+
+    python gridsearcher.py init [-xgb] [-pbs] folder
+
+The `-xgb`/`-pbs` flags copy templates for XGBoost and a PBS script for
+submission to the cluster into the project directory `folder`.
+
+Modify the templates and build the configuration files for the different
+trainings:
+
+    python gridsearcher.py build xgb_template.json
+
+This creates all the model configurations in the `configs` folder of the
+project folder.
+
+Submit a number of jobs `-n <num. of jobs>` to the cluster:
+
+    python gridsearcher.py submit [-n N] pbs_template.sh
