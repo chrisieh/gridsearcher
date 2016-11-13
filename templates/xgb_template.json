@@ -1,8 +1,8 @@
 {  
     "classifier": "xgboost",
     "settings": {
-        "train": "samples/train.h5",
-        "test": "samples/test.h5",
+        "train": "/lustre/user/cdeutsch/grid_searches/samples/train_1p_wbkg_nocuts.h5",
+        "test": "/lustre/user/cdeutsch/grid_searches/samples/test_1p_wbkg_nocuts.h5",
         "variables": [
             "TauJets.centFrac",
             "TauJets.etOverPtLeadTrk",
@@ -18,10 +18,10 @@
         "weight": "weight"
     },
     "grid": {
-        "eta": [0.01, 0.02, 0.04, 0.07, 0.1, 0.15, 0.2, 0.3],
+        "eta": [0.02, 0.06, 0.1, 0.14, 0.18, 0.22, 0.26, 0.3],
         "gamma": 0,
-        "max_depth": [4, 6, 8, 10],
-        "min_child_weight": [2500.0, 5000.0],
+        "max_depth": [4, 6, 8, 10, 12, 14],
+        "min_child_weight": [500.0, 1600.0, 2800.0, 4000.0],
         "max_delta_step": 0,
         "subsample": 1,
         "colsample_bytree": 1,
@@ -29,12 +29,12 @@
         "lambda": 1,
         "alpha": 0,
         "tree_method": "auto",
-        "sketch_eps": 0.03,
+        "sketch_eps": 0.005,
         "scale_pos_weight": 1,
         "objective": "binary:logistic",
-        "eval_metric": [["auc", "rmse"]],
+        "eval_metric": [["rmse"]],
         "nthread": 4,
-        "num_rounds": 10000,
+        "num_rounds": 4000,
         "early_stopping_rounds": 20
     }
 }
