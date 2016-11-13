@@ -32,7 +32,7 @@
         "sketch_eps": 0.005,
         "scale_pos_weight": 1,
         "objective": "binary:logistic",
-        "eval_metric": [["rmse"]],
+        "eval_metric": [["auc", "rmse"]],
         "nthread": 4,
         "num_rounds": 4000,
         "early_stopping_rounds": 20
