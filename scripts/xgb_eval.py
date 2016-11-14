@@ -99,9 +99,9 @@ if __name__ == "__main__":
         print("Checking iteration: {}".format(it))
 
         # Approx. training time for intermediate step
-        time = it / float(best_it) * total_time
-        print("Time: {} h\n".format(time))
-        metrics["time"] = time
+        train_time = it / float(best_it) * total_time
+        print("Time: {} h\n".format(train_time))
+        metrics["train_time"] = train_time
 
         # Evaluate BDT
         scores = bst.predict(dtest, ntree_limit=int(it))
