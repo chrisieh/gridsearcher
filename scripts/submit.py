@@ -5,18 +5,6 @@ import subprocess
 import sys
 
 
-def get_args():
-    parser = argparse.ArgumentParser()
-
-    group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("-train", action="store_true")
-    group.add_argument("-eval", action="store_true")
-
-    parser.add_argument("-n", type=int, help="Number of jobs")
-    parser.add_argument("script", help="Path to PBS script")
-    return parser.parse_args()
-
-
 def set_key(files, key, value):
     for filename in files:
         with open(filename) as f:

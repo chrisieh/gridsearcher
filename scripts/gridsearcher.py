@@ -15,9 +15,9 @@ def parse_args():
     # Init args
     subparser_init.add_argument("folder",
         help="Name of grid-search folder")
-    subparser_init.add_argument("-xgb", action="store_true",
+    subparser_init.add_argument("--xgb", action="store_true",
         help="Copy XGBoost templates")
-    subparser_init.add_argument("-pbs", action="store_true",
+    subparser_init.add_argument("--pbs", action="store_true",
         help="Copy PBS templates")
     subparser_init.set_defaults(func=init)
     
@@ -33,6 +33,11 @@ def parse_args():
     subparser_submit = subparsers.add_parser("submit",
         help="Submit to cluster")
     # Submit args
+    group = subparser_submit.add_mutually_exclusive_group(required=True)
+    group.add_argument("--train", action="store_true",
+        help="Submit for training")
+    group.add_argument("--eval", action="store_true",
+        help="Submit for evaluation")
     subparser_submit.add_argument("-n", type=int,
         help="Number of jobs to submit")
     subparser_submit.add_argument("script",
