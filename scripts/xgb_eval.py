@@ -2,6 +2,7 @@ import argparse
 import gc
 import json
 import os
+import time
 
 import numpy as np
 import xgboost as xgb
@@ -29,6 +30,7 @@ def rej_fixed_eff(truth, score, weight, efficiencies):
 if __name__ == "__main__":
     args = get_args()
     base_dir, _ = os.path.split(os.path.dirname(args.file))
+    tstart = time.time()
 
     # Load config
     with open(args.file) as f:
@@ -127,3 +129,7 @@ if __name__ == "__main__":
     config["evaluated"] = True
     with open(args.file, "w") as f:
         json.dump(config, f)
+    
+    tend = time.time()
+    eval_time = (tend - tstart) / 60.0 # min
+    print("Total evaluation time: {} min\n\n".format(eval_time))
