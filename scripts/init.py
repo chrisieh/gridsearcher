@@ -21,12 +21,12 @@ def init(args):
     template_dir = os.path.join(root_dir, "templates")
 
     if args.xgb:
-        fname = "xgb_template.json"
+        fname = "xgb_grid.json"
         shutil.copy2(os.path.join(template_dir, fname),
                      os.path.join(args.folder, fname))
     
     if args.pbs:
-        fname = "pbs_template.sh"
+        fname = "pbs_train.sh"
         shutil.copy2(os.path.join(template_dir, fname),
                      os.path.join(args.folder, fname))
     
