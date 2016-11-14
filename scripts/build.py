@@ -42,8 +42,9 @@ def build(args):
             "classifier": config["classifier"],
             "settings": config["settings"],
             "classifier_settings": opt,
-            "submitted": False,
+            "submitted_train": False,
             "trained": False,
+            "submitted_eval": False,
             "evaluated": False
         }
         

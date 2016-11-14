@@ -7,17 +7,22 @@ import sys
 
 def get_args():
     parser = argparse.ArgumentParser()
+
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("-train", action="store_true")
+    group.add_argument("-eval", action="store_true")
+
     parser.add_argument("-n", type=int, help="Number of jobs")
     parser.add_argument("script", help="Path to PBS script")
     return parser.parse_args()
 
 
-def set_submitted(files):
+def set_key(files, key, value):
     for filename in files:
         with open(filename) as f:
             config = json.load(f)
         
-        config["submitted"] = True
+        config[key] = value
         with open(filename, "w") as f:
             json.dump(config, f, indent=4)
 
@@ -26,12 +31,17 @@ def submit(args):
     base_dir = os.path.dirname(args.script)
     config_dir = os.path.join(base_dir, "configs")
 
+    if args.train:
+        submitted = "submitted_train"
+    if args.eval:
+        submitted = "submitted_eval"
+
     # Find jobs which have not been submitted
     not_submitted = []
     for filename in glob.glob(os.path.join(config_dir, "*.json")):
         with open(filename) as f:
             config = json.load(f)
-        if not config["submitted"]:
+        if not config[submitted]:
             not_submitted.append((filename, config["identifier"]))
     
     if len(not_submitted) == 0:
@@ -53,6 +63,6 @@ def submit(args):
 
     # Set submitted to true
     if retcode == 0:
-        set_submitted([filename for filename, _ in submit])
+        set_key([filename for filename, _ in submit], submitted, True)
     
     sys.exit(retcode)
