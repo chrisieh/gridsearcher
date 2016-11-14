@@ -12,10 +12,11 @@ import pandas as pd
 from sklearn.metrics import roc_auc_score, roc_curve
 
 
-def get_args():
+def get_identifier():
     parser = argparse.ArgumentParser()
-    parser.add_argument("file", help="Model description file")
-    return parser.parse_args()
+    parser.add_argument("arrayid", type=int, help="ArrayID")
+    args = parser.parse_args()
+    return "{:04}".format(args.arrayid)
 
 
 def rej_fixed_eff(truth, score, weight, efficiencies):
@@ -28,12 +29,11 @@ def rej_fixed_eff(truth, score, weight, efficiencies):
 
 
 if __name__ == "__main__":
-    args = get_args()
-    base_dir, _ = os.path.split(os.path.dirname(args.file))
+    identifier = get_identifier()
     tstart = time.time()
 
     # Load config
-    with open(args.file) as f:
+    with open("configs/{}.json".format(identifier)) as f:
         config = json.load(f)
     
     # Check trained
@@ -41,8 +41,7 @@ if __name__ == "__main__":
         print("Classifier not trained")
         sys.exit(1)
 
-    identifier = config["identifier"]
-    model = os.path.join(base_dir, "models", "{}.model".format(identifier))
+    model = "models/{}.model".format(identifier)
 
     # Check modelfile exists
     if not os.path.exists(model):
@@ -125,13 +124,13 @@ if __name__ == "__main__":
         results.append(store)
     
     # Save settings & metrics
-    result_file = os.path.join(base_dir, "evals", "{}.csv".format(identifier))
+    result_file = "evals/{}.csv".format(identifier)
     results = pd.DataFrame(results)
     results.to_csv(result_file, index=False)
 
     # Set evaluated  
     config["evaluated"] = True
-    with open(args.file, "w") as f:
+    with open("configs/{}.json".format(identifier), "w") as f:
         json.dump(config, f, indent=4)
     
     tend = time.time()

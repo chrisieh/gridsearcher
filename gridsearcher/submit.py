@@ -20,8 +20,10 @@ def submit(args):
     config_dir = os.path.join(base_dir, "configs")
 
     if args.train:
+        required = None
         submitted = "submitted_train"
     if args.eval:
+        required = "trained"
         submitted = "submitted_eval"
 
     # Find jobs which have not been submitted
@@ -29,7 +31,11 @@ def submit(args):
     for filename in glob.glob(os.path.join(config_dir, "*.json")):
         with open(filename) as f:
             config = json.load(f)
-        if not config[submitted]:
+        
+        # Check if requirement fulfilled
+        requirement = config[required] if required is not None else True
+
+        if (not config[submitted]) and requirement:
             not_submitted.append((filename, config["identifier"]))
     
     if len(not_submitted) == 0:

@@ -16,8 +16,9 @@ def init(args):
     os.mkdir(os.path.join(args.folder, "scripts"))
 
     # Copy templates
-    script_dir, _ = os.path.split(__file__)
-    root_dir, _ = os.path.split(script_dir)
+    module_dir, _ = os.path.split(__file__)
+    root_dir, _ = os.path.split(module_dir)
+    script_dir = os.path.join(root_dir, "scripts")
     template_dir = os.path.join(root_dir, "templates")
 
     if args.xgb:
@@ -26,11 +27,15 @@ def init(args):
                      os.path.join(args.folder, fname))
     
     if args.pbs:
-        fname = "pbs_train.sh"
-        shutil.copy2(os.path.join(template_dir, fname),
-                     os.path.join(args.folder, fname))
+        for fname in ["pbs_train.sh", "pbs_eval.sh"]:
+            shutil.copy2(os.path.join(template_dir, fname),
+                        os.path.join(args.folder, fname))
     
     # Copy runner script
-    shutil.copy2(os.path.join(script_dir, "runner.py"),
-                 os.path.join(args.folder, "scripts", "runner.py"))
+    shutil.copy2(os.path.join(script_dir, "train.py"),
+                 os.path.join(args.folder, "scripts", "train.py"))
+    
+    # Copy evaluate script
+    shutil.copy2(os.path.join(script_dir, "evaluate.py"),
+                 os.path.join(args.folder, "scripts", "evaluate.py"))
 

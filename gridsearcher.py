@@ -1,8 +1,6 @@
 import argparse
 
-from init import init
-from build import build
-from submit import submit
+from gridsearcher import init, build, submit
 
 
 def parse_args():
