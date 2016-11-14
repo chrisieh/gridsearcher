@@ -128,7 +128,7 @@ if __name__ == "__main__":
     # Set evaluated  
     config["evaluated"] = True
     with open(args.file, "w") as f:
-        json.dump(config, f)
+        json.dump(config, f, indent=4)
     
     tend = time.time()
     eval_time = (tend - tstart) / 60.0 # min
