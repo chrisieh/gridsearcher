@@ -89,6 +89,10 @@ if __name__ == "__main__":
         store = config["classifier_settings"].copy()
         store["identifier"] = identifier
 
+        # Number of iterations
+        store["best_iteration"] = best_it
+        store["iteration"] = int(it)
+
         # Calculate metrics
         metrics = {}
 
@@ -123,7 +127,7 @@ if __name__ == "__main__":
     # Save settings & metrics
     result_file = os.path.join(base_dir, "evals", "{}.csv".format(identifier))
     results = pd.DataFrame(results)
-    results.to_csv(result_file)
+    results.to_csv(result_file, index=False)
 
     # Set evaluated  
     config["evaluated"] = True
