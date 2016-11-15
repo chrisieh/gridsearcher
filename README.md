@@ -2,7 +2,10 @@
 
 ## Caveats
 
-Currently only `XGBoost` supported.
+- Currently only `XGBoost` supported
+- Training and testing sample needs to be in HDF5 format and signal/background need
+  to be merged into a single sample with a flag (e.g. is_sig) indicating whether it is
+  signal or background (for an example see `scripts/PrepareSample.ipynb` requires `root_numpy`)
 
 ## Requirements
 
@@ -12,6 +15,9 @@ Python packages for running on the cluster (virtualenv strongly recommended):
 - `tables` (pip)
 - `xgboost` ([compile](http://xgboost.readthedocs.io/en/latest/build.html) from source)
 - `sklearn` (pip)
+
+For collecting the results of the evaluation:
+- `jupyter` (for the notebook)
 
 ## Quickstart
 
